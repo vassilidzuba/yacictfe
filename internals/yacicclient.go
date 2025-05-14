@@ -139,7 +139,7 @@ func InitBuildList(projectId string, branchId string) {
 		log.Fatal(err)
 	}
 
-	json.Unmarshal(data, &Builds)
+	err = json.Unmarshal(data, &Builds)
 	if err != nil {
 		log.Fatal(err)
 	}
