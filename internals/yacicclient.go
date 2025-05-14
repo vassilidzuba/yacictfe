@@ -20,7 +20,7 @@ import (
 		"log"
 	//	"strconv"
 		"net/http"
-		"io/ioutil"
+		"io"
 		"encoding/json"
 )
 
@@ -78,7 +78,7 @@ func InitProjectList() {
 		// requested URL is not found, or if the server is not reachable.
 		log.Fatal(err)
 	}
-	defer resp.Body.Close()
+	defer closeBody(&resp.Body)
 
 	// if we want to check for a specific status code, we can do so here
 	// for example, a successful request should return a 200 OK status
@@ -90,12 +90,15 @@ func InitProjectList() {
 	}
 
 	// print the response
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	json.Unmarshal(data, &Projects)
+	err = json.Unmarshal(data, &Projects)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func InitBuildList(projectId string, branchId string) {
@@ -119,7 +122,7 @@ func InitBuildList(projectId string, branchId string) {
 		// requested URL is not found, or if the server is not reachable.
 		log.Fatal(err)
 	}
-	defer resp.Body.Close()
+	defer closeBody(&resp.Body)
 
 	// if we want to check for a specific status code, we can do so here
 	// for example, a successful request should return a 200 OK status
@@ -131,7 +134,7 @@ func InitBuildList(projectId string, branchId string) {
 	}
 
 	// print the response
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -162,7 +165,7 @@ func InitStepList(projectId string, branchId string, timestamp string) {
 		// requested URL is not found, or if the server is not reachable.
 		log.Fatal(err)
 	}
-	defer resp.Body.Close()
+	defer closeBody(&resp.Body)
 
 	// if we want to check for a specific status code, we can do so here
 	// for example, a successful request should return a 200 OK status
@@ -174,12 +177,15 @@ func InitStepList(projectId string, branchId string, timestamp string) {
 	}
 
 	// print the response
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	json.Unmarshal(data, &Steps)
+	err = json.Unmarshal(data, &Steps)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func GetBranches(projectId string) []Branch {
@@ -189,4 +195,12 @@ func GetBranches(projectId string) []Branch {
 		}
 	}
 	return nil
+}
+
+
+func closeBody(body *io.ReadCloser) {
+	err := (*body).Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 }

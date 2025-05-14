@@ -171,43 +171,39 @@ func inputCaptureHandler(event *tcell.EventKey) *tcell.EventKey {
 	if event.Key() == tcell.KeyRune {
 		ch := event.Rune()
 		
-		if ch == 'p' {
+		switch ch {
+		case 'p':
 			App.SetFocus(ProjectList)
 			return nil;
-		}
-		if ch == 'b' {
+		case 'b':
 			App.SetFocus(BranchList)
 			return nil;
-		}
-		if ch == 'u' {
+		case 'u':
 			App.SetFocus(BuildList)
 			return nil;
-		}
-		if ch == 's' {
+		case 's':
 			App.SetFocus(StepList)
 			return nil;
-		}
-		if ch == 'n' {
-			if CurrentFocus == "p" {
+		case 'n':
+			switch CurrentFocus { 
+			case "p":
 				App.SetFocus(BranchList)
 				CurrentFocus = "b"
-			} else if CurrentFocus == "b" {
+			case "b":
 				App.SetFocus(BuildList)
 				CurrentFocus = "u"
-			} else if CurrentFocus == "u" {
+			case "u":
 				App.SetFocus(StepList)
 				CurrentFocus = "s"
-			} else if CurrentFocus == "b" {
+			case "s":
 				App.SetFocus(ProjectList)
 				CurrentFocus = "p"
 			}
 			return nil;
-		}
-		if ch == 'l' {
+		case 'l':
 			displayLog()
 			return nil
-		}
-		if ch == 'r' {
+		case 'r':
 			runPipeline()
 			return nil
 		}
